@@ -210,9 +210,6 @@ namespace OnStationExporter
         // https://fountainware.com/compass/HTML_Help/Compass_Editor/surveyfileformat.htm
         public async Task<string> SaveToCompass(string folderName)
         {
-            // SEF isn't a great it's really not a viable option for interchange.
-            // Also, compass isn't smart enough to calculate forward references, so if a DAT file doesn't tie in
-            // to the one above it, Compass can't handle it. I know, it's absolutely moronic. But there you have it.
             this.ProgressList.Add("Generating Compass project in:" + folderName);
             await Task.Delay(1);
             this.ShowSave = false;
