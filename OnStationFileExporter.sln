@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnStationFileExporter", "On
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SetupProject", "SetupProject\SetupProject.wixproj", "{B45125DF-73D7-4538-8717-048A0101B983}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SetupFile", "SetupFile", "{30B6E301-6FBE-453E-9713-D9FD2891CDFB}"
+	ProjectSection(SolutionItems) = preProject
+		SetupProject.msi = SetupProject.msi
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

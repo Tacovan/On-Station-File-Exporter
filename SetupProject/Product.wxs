@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="On Station Exporter Setup" Language="1033" Version="1.0.0.0" Manufacturer="tacovan@gmail.com" UpgradeCode="f0b095ed-8b1b-42c4-a84e-2173c211a8df">
+	<Product Id="*" Name="On Station File Exporter" Language="1033" Version="1.0.0.0" Manufacturer="tacovan@gmail.com" UpgradeCode="f0b095ed-8b1b-42c4-a84e-2173c211a8df">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -9,12 +9,33 @@
 		<Feature Id="ProductFeature" Title="On Station Exporter" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
-	</Product>
+    <UI Id="UserInterface">
+      <Property Id="WIXUI_INSTALLDIR" Value="TARGETDIR" />
+      <Property Id="WixUI_Mode" Value="Custom" />
+
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="9" Bold="yes" />
+      <TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="EndDialog" Value="Return" Order="2"></Publish>
+    </UI>
+    <UIRef Id="WixUI_Common"/>
+  </Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="INSTALLFOLDER" Name="On Station Exporter" />
+        <Directory Id="DesktopFolder" Name="Desktop"/>
 			</Directory>
 		</Directory>
 	</Fragment>
@@ -22,9 +43,13 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
+			<Component Id="ProductComponent">
+        <File Source="$(var.OnStationFileExporter.TargetPath)">
+          <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="On Station File Exporter" Advertise="yes">
+            <Icon Id="MyIconID.ico" SourceFile="..\OnStationToSEF\icon.ico" />
+          </Shortcut>
+        </File>
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 </Wix>
