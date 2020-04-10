@@ -16,6 +16,7 @@ namespace OnStationExporter
             set;
         }
 
+        public bool Dive { get; set; } = false;
         public string From;
         public string To;
         public double Tape;
@@ -33,6 +34,20 @@ namespace OnStationExporter
             }
         }
 
+        void SetDiveMeasurements(string azimuth, string depth)
+        {
+            this.AzFront = Line.ParseDOrNan(azimuth);
+            this.Depth= Line.ParseDOrNan(depth);
+            this.AzBack = double.NaN;
+            this.IncFront = double.NaN;
+            this.IncBack = double.NaN;
+        }
+
+        public double Depth
+        {
+            get; set;
+        } = double.NaN;
+
         void SetMeasurements(string a1,string a2,string i1,string i2)
         {
             this.AzFront = Line.ParseDOrNan(a1);
@@ -43,6 +58,10 @@ namespace OnStationExporter
 
         public Shot(Line line,string dataorder)
         {
+            if ( line.Token=="DiveShot" )
+            {
+                Dive = true;
+            }
             DataOrder =dataorder;
             string[] values = line.ValueS.Split(' ');
             From = values[0];
@@ -52,18 +71,31 @@ namespace OnStationExporter
                 throw new Exception("Expected Tape to be first dataorder measurement at " + line.LineNumber);
             }
             Tape = double.Parse(values[2]);
-
-            if ( DataOrder[1]=='A' && DataOrder[2]=='I')
+            if (Dive)
             {
-                SetMeasurements(values[3], values[5], values[4], values[6]);
-            }
-            else if ( DataOrder[1]=='I' && DataOrder[2]=='A')
-            {
-                SetMeasurements(values[4], values[6], values[3], values[5]);
+                if (DataOrder[1] == 'A' && DataOrder[2] == 'I')
+                {
+                    SetDiveMeasurements(values[3], values[4]);
+                }
+                else if (DataOrder[1] == 'I' && DataOrder[2] == 'A')
+                {
+                    SetDiveMeasurements(values[4], values[3]);
+                }
             }
             else
             {
-                throw new Exception("Expected Azimuth or Inclination to follow tape at " + line.LineNumber);
+                if (DataOrder[1] == 'A' && DataOrder[2] == 'I')
+                {
+                    SetMeasurements(values[3], values[5], values[4], values[6]);
+                }
+                else if (DataOrder[1] == 'I' && DataOrder[2] == 'A')
+                {
+                    SetMeasurements(values[4], values[6], values[3], values[5]);
+                }
+                else
+                {
+                    throw new Exception("Expected Azimuth or Inclination to follow tape at " + line.LineNumber);
+                }
             }
 
             // Read the flags. These indicate things like whether it's a surface survey and whether it counts in the overall length

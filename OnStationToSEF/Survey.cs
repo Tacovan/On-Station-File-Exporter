@@ -13,6 +13,23 @@ namespace OnStationExporter
         {
         }
 
+        public bool IsDive
+        {
+            get
+            {
+                return Shots.Any(x => x.Dive);
+            }
+        }
+
+        public string DepthGauge
+        {
+            get; set;
+        } = "";
+        public double DepthCorrection
+        {
+            get; set;
+        } = 0;
+        public string DepthUnits { get; set; } = "M";
         public string SurveyName
         {
             get; set;
@@ -50,6 +67,8 @@ namespace OnStationExporter
         public string TapeName { get; set; }
         public double TapeCorrection { get; set; } = Double.NaN;
         public double TapeStandardError { get; set; } = Double.NaN;
+
+       
         #endregion
 
         public TeamMember[] SurveyTeam = { new TeamMember(), new TeamMember(), new TeamMember(), new TeamMember(), new TeamMember(), new TeamMember() };
@@ -195,6 +214,15 @@ namespace OnStationExporter
                     case "Duty6":
                         SurveyTeam[5].Duty= lines[start].ValueS;
                         break;
+                    case "DepthUnits":
+                        DepthUnits = lines[start].ValueS;
+                        break;
+                    case "DepthGauge":
+                        DepthGauge = lines[start].ValueS;
+                        break;
+                    case "DepthCorrection":
+                        DepthCorrection = lines[start].ValueDouble;
+                        break;
                 }
                 start++;
             }
@@ -231,6 +259,10 @@ namespace OnStationExporter
         // Exports the survey directly into Compass format so that we don't lose fidelity
         public List<string> WriteToCompass(StreamWriter fileStream)
         {
+            if ( IsDive)
+            {
+                throw new Exception("Encountered a dive survey. This isn't supported but I'd be happy to add it. Please contact tacovan@gmail.com");
+            }
             fileStream.WriteLine("Compass Folder Export from " + App.VersionAndContactInfo);
             List<string> statusStrings=new List<string>();
 
@@ -402,6 +434,11 @@ namespace OnStationExporter
 
         public string WriteToWalls(string fullPathToFolder,StreamWriter wpjFile,List<string> usedFileNames,string subFolderName,ShotRenamer renamer)
         {
+            if (IsDive)
+            {
+                throw new Exception("Encountered a dive survey. This isn't supported but I'd be happy to add it. Please contact tacovan@gmail.com");
+            }
+
             string fileName = MakeUniqueName(usedFileNames,SurveyNameStripped);
 
             // Add the survey to the project file
