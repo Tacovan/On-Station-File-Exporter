@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SetupFile", "SetupFile", "{30B6E301-6FBE-453E-9713-D9FD2891CDFB}"
 	ProjectSection(SolutionItems) = preProject
 		SetupProject.msi = SetupProject.msi
+		setupreadme.txt = setupreadme.txt
 	EndProjectSection
 EndProject
 Global

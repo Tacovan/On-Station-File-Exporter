@@ -1,0 +1,1 @@
+The setup file is manually copied to this location after building the install. It's here as a convenience so that people don't have to build this to use the exporter.
